@@ -15,7 +15,7 @@ const getPosts = async () => {
 };
 
 const addPost = async (titulo, img, descripcion, likes) => {
-    const pgQuery = "INSERT INTO posts VALUES (DEFAULT, $1, $2, $3, $4)";
+    const pgQuery = "INSERT INTO posts VALUES (DEFAULT, $1, $2, $3, $4) RETURNING *";
     const values = [titulo, img, descripcion, likes];
     const result = await pool.query(pgQuery, values);
 };
@@ -28,7 +28,7 @@ const updatingLikes = async (id) => {
     const likeResult = await pool.query(likeQuery, [id]);
     const data = likeResult.rows[0];
     let likeQ = data.likes + 1;
-    const updatingLikeQuery = 'UPDATE posts SET likes = $1 WHERE id = $2';
+    const updatingLikeQuery = 'UPDATE posts SET likes = $1 WHERE id = $2 RETURNING *';
     const updateValues = [likeQ, id];
     const updatedResult = await pool.query(updatingLikeQuery, updateValues);
     return updatedResult.rows[0]
